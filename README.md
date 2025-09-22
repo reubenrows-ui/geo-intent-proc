@@ -58,7 +58,7 @@ This agent relies on specific tables and a connection within Google BigQuery. Yo
     ```
 3.  **Run Notebook**: Open and run all cells in the `deployment/bigquery_setup_scripts/notebooks/create_bq_resources.ipynb` notebook. This will:
     *   Create the `geo_intent` BigQuery dataset.
-    *   Create the `demographic_data` and `us_places` tables.
+    *   Create the `demographic_data`, `us_places_category` and `us_places` tables.
     *   Create a BigQuery connection to Vertex AI for using generative AI functions in SQL.
 
 ## Quick Start (Local Testing)

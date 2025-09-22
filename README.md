@@ -69,7 +69,7 @@ After completing the Data Setup, install packages and launch the local developme
 make install && make playground
 ```
 
-Once the Streamlit playground launches, ask a question like:
+Once the Streamlit playground launches and you've given a location, ask a question like:
 - "Is Austin, TX a good place to open a coffee shop?"
 - "Analyze the market for a new cafe near the University of Washington in Seattle."
 

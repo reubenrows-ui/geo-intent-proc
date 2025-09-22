@@ -89,6 +89,8 @@ geocoder = LlmAgent(
         "           - Ask about existing coffee shops or competitors in the area.\n"    
         "           - Ask about potential gaps in the market for new cafes.\n"
         "           - Ask for a comprehensive report on the regional market landscape.\n"
+        "        3. If they are requesting information about a large area, i.e. a city or region, let them know that you" 
+        "           can continue but the analysis would be more informative if you could narrow it down to a specific neighborhood or district.\n"
         "- If {geocode_result.result.formatted_address} doesn't include USA, ask the user if they want to search for a location within the USA because the current location is outside the USA and its not supported currently.\n"
 
     ),

@@ -12,55 +12,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import datetime
-import os
-from zoneinfo import ZoneInfo
+from google.adk.agents import LlmAgent
+from .sub_agents.geocoder.agent import geocoder_agent
+from .sub_agents.execute_sql.agent import demographic_insights_agent, competition_analysis_agent, gap_identification_agent, regional_report_agent
 
-import google.auth
-from google.adk.agents import Agent
-
-_, project_id = google.auth.default()
-os.environ.setdefault("GOOGLE_CLOUD_PROJECT", project_id)
-os.environ.setdefault("GOOGLE_CLOUD_LOCATION", "global")
-os.environ.setdefault("GOOGLE_GENAI_USE_VERTEXAI", "True")
-
-
-def get_weather(query: str) -> str:
-    """Simulates a web search. Use it get information on weather.
-
-    Args:
-        query: A string containing the location to get weather information for.
-
-    Returns:
-        A string with the simulated weather information for the queried location.
-    """
-    if "sf" in query.lower() or "san francisco" in query.lower():
-        return "It's 60 degrees and foggy."
-    return "It's 90 degrees and sunny."
-
-
-def get_current_time(query: str) -> str:
-    """Simulates getting the current time for a city.
-
-    Args:
-        city: The name of the city to get the current time for.
-
-    Returns:
-        A string with the current time information.
-    """
-    if "sf" in query.lower() or "san francisco" in query.lower():
-        tz_identifier = "America/Los_Angeles"
-    else:
-        return f"Sorry, I don't have timezone information for query: {query}."
-
-    tz = ZoneInfo(tz_identifier)
-    now = datetime.datetime.now(tz)
-    return f"The current time for query {query} is {now.strftime('%Y-%m-%d %H:%M:%S %Z%z')}"
-
-
-root_agent = Agent(
-    name="root_agent",
+root_agent = LlmAgent(
+    name="RootAgent",
     model="gemini-2.5-flash",
-    instruction="You are a helpful AI assistant designed to provide accurate and useful information.",
-    tools=[get_weather, get_current_time],
+    instruction=(
+        "You are the root agent orchestrating the workflow. "
+        "Based on the user's input, you will decide which sub-agent to invoke. "
+        "Start off by triggering the geocoder_agent if {geocode_result?} is null or {geocode_result.success} is not true"
+        "if {geocode_result?} is not null and {geocode_result.success} is true you can decide based on the users input \n"
+        " if you need to trigger any of the other agents: \n"
+        "- DataInsightsAgent: If the user asks for a demographic summary of the location they have provided.\n"
+        "- CompetitionAnalysisAgent: If the user wants to know about existing coffee shops or competitors in the area.\n"
+        "- GapIdentificationAgent: If the user is looking for potential gaps in the market for new cafes.\n"
+        "- RegionalReportAgent: If the user requests a comprehensive report on the regional market landscape."
+    ),
+    sub_agents=[geocoder_agent, demographic_insights_agent, competition_analysis_agent, gap_identification_agent, regional_report_agent],
 )
+geocoder_agent

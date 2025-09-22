@@ -18,7 +18,8 @@ import json
 import logging
 import os
 from typing import Any
-
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from .env file if it exists
 import google.auth
 import vertexai
 from google.adk.artifacts import GcsArtifactService
@@ -79,7 +80,7 @@ def deploy_agent_engine_app(
     """Deploy the agent engine app to Vertex AI."""
     logging.basicConfig(level=logging.INFO)
     staging_bucket_uri = f"gs://{project}-agent-engine"
-    artifacts_bucket_name = f"{project}-geo-intent-logs-data"
+    artifacts_bucket_name = f"{project}-geo-intents-logs-data"
     create_bucket_if_not_exists(
         bucket_name=artifacts_bucket_name, project=project, location=location
     )
@@ -174,7 +175,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--agent-name",
-        default="geo-intent",
+        default="geo-intents",
         help="Name for the agent engine",
     )
     parser.add_argument(
@@ -190,6 +191,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--set-env-vars",
+        default=f"GOOGLE_MAPS_API_KEY={os.environ['GOOGLE_MAPS_API_KEY']}",
         help="Comma-separated list of environment variables in KEY=VALUE format",
     )
     parser.add_argument(

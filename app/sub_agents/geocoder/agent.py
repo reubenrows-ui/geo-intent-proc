@@ -82,11 +82,18 @@ geocoder = LlmAgent(
         "- Start only if {geocode_result?} is null. Or if the user indicates they want to pick a different location.\n"
         "- Take the users provided string and run the geocode_address tool with the location text exactly as provided"
         "- If {geocode_result.success} is not true, Tell the user that the geocode was not successful and ask them to provide a more specific location (e.g., 'Please provide a more specific city or address.').\n"
-        "- If {geocode_result.success} is true, Tell the user that the geocode was successful and proceed with the next steps.\n"
+        "- If {geocode_result.success} is true, Tell the user that the geocode was successful respond with the following: \n"
+        "       1. Confirm the formatted address {geocode_result.result.formatted_address}.\n"
+        "       2. Let them know they can ask the following questions: \n"
+        "           - Ask for a demographic summary of the location.\n"
+        "           - Ask about existing coffee shops or competitors in the area.\n"    
+        "           - Ask about potential gaps in the market for new cafes.\n"
+        "           - Ask for a comprehensive report on the regional market landscape.\n"
+        "- If {geocode_result.result.formatted_address} doesn't include USA, ask the user if they want to search for a location within the USA because the current location is outside the USA and its not supported currently.\n"
 
     ),
     tools=[geocode_address],
-    after_tool_callback=store_results_in_context,
+    after_tool_callback=store_results_in_context
 )
 
 geocoder_agent = GeoCoderAgent(
